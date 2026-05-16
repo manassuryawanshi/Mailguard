@@ -33,30 +33,30 @@
 }
 
 [data-theme="light"] {
-  --bg-main: #f1f5f9; /* Slate 100 - more structured than f8fafc */
-  --bg-card: #ffffff; 
-  --bg-card-hover: #f8fafc;
-  --bg-input: #f8fafc;
+  --bg-main: #e2e8f0; /* Sophisticated Slate 200 - deeper than before */
+  --bg-card: rgba(255, 255, 255, 0.9); /* Translucent white for depth */
+  --bg-card-hover: rgba(255, 255, 255, 1);
+  --bg-input: #f1f5f9;
   
-  --border-subtle: rgba(15, 23, 42, 0.08);
-  --border-strong: rgba(15, 23, 42, 0.12);
-  --border-glow: rgba(37, 99, 235, 0.2);
+  --border-subtle: rgba(15, 23, 42, 0.1);
+  --border-strong: rgba(15, 23, 42, 0.15);
+  --border-glow: rgba(37, 99, 235, 0.3);
   
-  --text-main: #0f172a; /* Slate 900 */
-  --text-muted: #334155; /* Slate 700 - darker for better readability */
+  --text-main: #1e293b; /* Slate 800 - slightly softer than pure slate 900 */
+  --text-muted: #475569; /* Slate 600 */
   
-  --success: #047857; /* Emerald 700 */
-  --warning: #b45309; /* Amber 700 */
-  --danger: #be123c; /* Rose 700 */
+  --success: #059669; 
+  --warning: #d97706; 
+  --danger: #dc2626; 
   
   --neon-cyan: #2563eb; 
   --neon-cyan-hover: #1d4ed8;
-  --neon-blue: #6d28d9; /* Deeper Purple */
-  --neon-violet: #4338ca;
+  --neon-blue: #7c3aed; /* Vibrant Purple */
+  --neon-violet: #4f46e5;
   
-  --nav-bg: rgba(255, 255, 255, 0.85); /* Much less transparent for readability */
-  --shadow-strong: rgba(15, 23, 42, 0.08);
-  --shadow-hover: rgba(15, 23, 42, 0.12);
+  --nav-bg: rgba(226, 232, 240, 0.8); /* Matches bg-main with blur */
+  --shadow-strong: rgba(15, 23, 42, 0.12);
+  --shadow-hover: rgba(15, 23, 42, 0.18);
 }
 
 html {
