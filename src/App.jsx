@@ -295,7 +295,7 @@ export default function MailGuardApp() {
 
   const performAnalysisResult = async (email) => {
     try {
-      const response = await fetch("http://localhost:8000/api/analyze", {
+      const response = await fetch("https://mailguard-backend-6mh7.onrender.com/api/analyze", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
