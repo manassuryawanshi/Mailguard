@@ -534,16 +534,16 @@ export default function MailGuardApp() {
 
               <div className="button-group">
                 <button
-                  onClick={() => document.getElementById("education")?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() => document.getElementById("tips")?.scrollIntoView({ behavior: "smooth" })}
                   className="btn btn-primary"
                 >
                   Test Your Knowledge
                 </button>
                 <button
-                  onClick={() => document.getElementById("scannerSection")?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() => document.getElementById("education")?.scrollIntoView({ behavior: "smooth" })}
                   className="btn btn-secondary"
                 >
-                  Live Email Analyzer
+                  Interactive Tutorial
                 </button>
               </div>
             </div>
