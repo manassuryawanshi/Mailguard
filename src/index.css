@@ -34,16 +34,16 @@
 
 [data-theme="light"] {
   --bg-main: #f1f5f9; 
-  --bg-card: rgba(239, 246, 255, 0.8); /* Vibrant light Azure tint */
+  --bg-card: rgba(239, 246, 255, 0.8); 
   --bg-card-hover: rgba(219, 234, 254, 0.9);
   --bg-input: #ffffff;
   
-  --border-subtle: rgba(59, 130, 246, 0.2); /* Tinted blue border */
+  --border-subtle: rgba(59, 130, 246, 0.2); 
   --border-strong: rgba(59, 130, 246, 0.4);
-  --border-glow: rgba(37, 99, 235, 0.4); /* Stronger permanent glow */
+  --border-glow: rgba(37, 99, 235, 0.4); 
   
-  --text-main: #1e3a8a; /* Deep Navy for better vibrancy */
-  --text-muted: #3b82f6; 
+  --text-main: #020617; /* High-contrast Slate 950 (Almost Black) for maximum readability */
+  --text-muted: #334155; /* Darker Slate 700 for better contrast */
   
   --success: #059669; 
   --warning: #d97706; 
@@ -55,7 +55,7 @@
   --neon-violet: #4f46e5;
   
   --nav-bg: rgba(241, 245, 249, 0.9); 
-  --shadow-strong: rgba(37, 99, 235, 0.08); /* Blue-tinted shadows */
+  --shadow-strong: rgba(37, 99, 235, 0.08); 
   --shadow-hover: rgba(37, 99, 235, 0.15);
 }
 
