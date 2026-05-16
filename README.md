@@ -43,6 +43,38 @@ The Python backend evaluates incoming payloads against several security heuristi
 
 The application is built using a modern, distributed architecture:
 
+```
+┌─────────────────────────────────────────┐
+│         React / Vite Frontend           │
+│  (Deployed on Vercel)                   │
+│                                         │
+│  ┌─────────┐   ┌────────────────────┐   │
+│  │ Scanner │──▶│ Analysis UI +      │   │
+│  │   UI    │   │ Anatomy Report     │   │
+│  └─────────┘   └────────────────────┘   │
+│        │                                │
+│        │  POST /api/analyze             │
+│        ▼                                │
+└─────────────────────────────────────────┘
+          │  HTTP fetch (JSON)
+          ▼
+┌─────────────────────────────────────────┐
+│      Python FastAPI Backend             │
+│  (Deployed on Render)                   │
+│                                         │
+│  ┌─────────────────────────────────┐    │
+│  │  AI Threat Analysis Engine      │    │
+│  │  - Financial cue detection      │    │
+│  │  - URL & IP regex scanning      │    │
+│  │  - Credential theft patterns    │    │
+│  │  - Attachment signature check   │    │
+│  │  - Urgency/intimidation flags   │    │
+│  └─────────────────────────────────┘    │
+│        │                                │
+│        │  Returns structured Findings[] │
+└─────────────────────────────────────────┘
+```
+
 1.  **Frontend (React/Vite):** A glassmorphic, responsive interface hosted on Vercel. It handles the interactive UI, state management, and real-time visualization of threat data.
 2.  **Backend (FastAPI):** A high-performance Python API hosted on Render. It executes the core analysis logic and returns structured JSON findings.
 
