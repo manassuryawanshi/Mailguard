@@ -515,7 +515,7 @@ export default function MailGuardApp() {
           <div className="hero-section">
             <div className="hero-content fade-in-up delay-1">
               <div className="hero-badge">
-                <span className="icon" style={{ marginRight: '8px' }}>🛡️</span> AI Powered Cybersecurity Tool
+                Next-Gen Threat Intelligence Engine
               </div>
 
               <h2 
@@ -534,16 +534,16 @@ export default function MailGuardApp() {
 
               <div className="button-group">
                 <button
-                  onClick={() => document.getElementById("scannerSection")?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() => document.getElementById("education")?.scrollIntoView({ behavior: "smooth" })}
                   className="btn btn-primary"
                 >
-                  Start Analysis
+                  Test Your Knowledge
                 </button>
                 <button
-                  onClick={() => document.getElementById("education")?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() => document.getElementById("scannerSection")?.scrollIntoView({ behavior: "smooth" })}
                   className="btn btn-secondary"
                 >
-                  Interactive Tutorial
+                  Live Email Analyzer
                 </button>
               </div>
             </div>
