@@ -33,17 +33,17 @@
 }
 
 [data-theme="light"] {
-  --bg-main: #f8fafc; /* Very light slate for a clean base */
-  --bg-card: rgba(241, 245, 249, 0.7); /* Muted Slate 100 - no pure white */
-  --bg-card-hover: rgba(226, 232, 240, 0.8); /* Slate 200 on hover */
-  --bg-input: #f1f5f9;
+  --bg-main: #f1f5f9; 
+  --bg-card: rgba(239, 246, 255, 0.8); /* Vibrant light Azure tint */
+  --bg-card-hover: rgba(219, 234, 254, 0.9);
+  --bg-input: #ffffff;
   
-  --border-subtle: rgba(15, 23, 42, 0.08);
-  --border-strong: rgba(15, 23, 42, 0.12);
-  --border-glow: rgba(37, 99, 235, 0.15);
+  --border-subtle: rgba(59, 130, 246, 0.2); /* Tinted blue border */
+  --border-strong: rgba(59, 130, 246, 0.4);
+  --border-glow: rgba(37, 99, 235, 0.4); /* Stronger permanent glow */
   
-  --text-main: #1e293b; 
-  --text-muted: #64748b; 
+  --text-main: #1e3a8a; /* Deep Navy for better vibrancy */
+  --text-muted: #3b82f6; 
   
   --success: #059669; 
   --warning: #d97706; 
@@ -54,9 +54,9 @@
   --neon-blue: #7c3aed; 
   --neon-violet: #4f46e5;
   
-  --nav-bg: rgba(248, 250, 252, 0.8); 
-  --shadow-strong: rgba(15, 23, 42, 0.05);
-  --shadow-hover: rgba(15, 23, 42, 0.08);
+  --nav-bg: rgba(241, 245, 249, 0.9); 
+  --shadow-strong: rgba(37, 99, 235, 0.08); /* Blue-tinted shadows */
+  --shadow-hover: rgba(37, 99, 235, 0.15);
 }
 
 html {
