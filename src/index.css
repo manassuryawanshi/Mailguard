@@ -33,17 +33,17 @@
 }
 
 [data-theme="light"] {
-  --bg-main: #e2e8f0; /* Sophisticated Slate 200 - deeper than before */
-  --bg-card: rgba(255, 255, 255, 0.9); /* Translucent white for depth */
-  --bg-card-hover: rgba(255, 255, 255, 1);
+  --bg-main: #f8fafc; /* Very light slate for a clean base */
+  --bg-card: rgba(241, 245, 249, 0.7); /* Muted Slate 100 - no pure white */
+  --bg-card-hover: rgba(226, 232, 240, 0.8); /* Slate 200 on hover */
   --bg-input: #f1f5f9;
   
-  --border-subtle: rgba(15, 23, 42, 0.1);
-  --border-strong: rgba(15, 23, 42, 0.15);
-  --border-glow: rgba(37, 99, 235, 0.3);
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.12);
+  --border-glow: rgba(37, 99, 235, 0.15);
   
-  --text-main: #1e293b; /* Slate 800 - slightly softer than pure slate 900 */
-  --text-muted: #475569; /* Slate 600 */
+  --text-main: #1e293b; 
+  --text-muted: #64748b; 
   
   --success: #059669; 
   --warning: #d97706; 
@@ -51,12 +51,12 @@
   
   --neon-cyan: #2563eb; 
   --neon-cyan-hover: #1d4ed8;
-  --neon-blue: #7c3aed; /* Vibrant Purple */
+  --neon-blue: #7c3aed; 
   --neon-violet: #4f46e5;
   
-  --nav-bg: rgba(226, 232, 240, 0.8); /* Matches bg-main with blur */
-  --shadow-strong: rgba(15, 23, 42, 0.12);
-  --shadow-hover: rgba(15, 23, 42, 0.18);
+  --nav-bg: rgba(248, 250, 252, 0.8); 
+  --shadow-strong: rgba(15, 23, 42, 0.05);
+  --shadow-hover: rgba(15, 23, 42, 0.08);
 }
 
 html {
