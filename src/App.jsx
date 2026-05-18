@@ -260,14 +260,18 @@ export default function MailGuardApp() {
     return () => clearInterval(interval);
   }, []);
 
-  const analyzeEmail = () => {
-    const email = document.getElementById("emailInput").value.toLowerCase();
+  const analyzeEmail = async () => {
+    const emailInput = document.getElementById("emailInput");
+    if (!emailInput) return;
+    const email = emailInput.value.toLowerCase();
+    if (!email.trim()) return;
+
     setIsAnalyzing(true);
     setHasAnalyzed(true);
     setAnalysisLogs([]);
     setAnalysisProgress(0);
-    
-    const logs = [
+
+    const initialLogs = [
       "Initializing AI Threat Engine...",
       "Parsing email headers and metadata...",
       "Scanning for suspicious URL patterns...",
@@ -278,88 +282,191 @@ export default function MailGuardApp() {
     ];
 
     let currentLogIndex = 0;
-    const interval = setInterval(() => {
-      if (currentLogIndex < logs.length) {
-        setAnalysisLogs(prev => [...prev, logs[currentLogIndex]]);
-        setAnalysisProgress(((currentLogIndex + 1) / logs.length) * 100);
-        currentLogIndex++;
-      } else {
-        clearInterval(interval);
-        setTimeout(() => {
-          setIsAnalyzing(false);
-          performAnalysisResult(email);
-        }, 500);
-      }
-    }, 400);
-  };
+    let animDone = false;
+    let fetchDone = false;
+    let fetchError = null;
+    let responseData = null;
 
-  const performAnalysisResult = async (email) => {
-    try {
-      const response = await fetch("https://mailguard-backend-6mh7.onrender.com/api/analyze", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text: email }),
+    // Start background fetch IMMEDIATELY in parallel
+    const apiPromise = fetch("https://mailguard-backend-6mh7.onrender.com/api/analyze", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: email }),
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Backend analysis failed");
+        return await res.json();
+      })
+      .then((data) => {
+        responseData = data;
+        fetchDone = true;
+      })
+      .catch((err) => {
+        fetchError = err;
+        fetchDone = true;
       });
 
-      if (!response.ok) {
-        throw new Error("Backend analysis failed");
+    // Snappy fake terminal animation (140ms per log)
+    const logInterval = setInterval(() => {
+      if (currentLogIndex < initialLogs.length) {
+        setAnalysisLogs(prev => [...prev, initialLogs[currentLogIndex]]);
+        setAnalysisProgress(((currentLogIndex + 1) / (initialLogs.length + 2)) * 100);
+        currentLogIndex++;
+      } else {
+        clearInterval(logInterval);
+        animDone = true;
+        checkCompletion();
       }
+    }, 140);
 
-      const data = await response.json();
-      
-      // Save data to state for the Anatomy section
+    let waitTimer = null;
+    let elapsedSeconds = 0;
+
+    const checkCompletion = () => {
+      if (animDone && fetchDone) {
+        finalizeAnalysis();
+      } else if (animDone && !fetchDone) {
+        // If logs animation finished but fetch is still pending, display a dynamic warm-up message
+        setAnalysisLogs(prev => [
+          ...prev,
+          "Establishing secure tunnel to cloud intelligence node...",
+          "Server cold-start detected. Waking up the engine (takes ~20-30s on Render free hosting)..."
+        ]);
+
+        let dotCount = 0;
+        waitTimer = setInterval(() => {
+          elapsedSeconds += 1;
+          dotCount = (dotCount + 1) % 4;
+          const dots = ".".repeat(dotCount);
+          const baseMsg = `Waiting for server response${dots} [Elapsed: ${elapsedSeconds}s / Est. 30s max]`;
+
+          setAnalysisLogs(prev => {
+            const updated = [...prev];
+            if (updated.length > 0 && updated[updated.length - 1].startsWith("Waiting for server response")) {
+              updated[updated.length - 1] = baseMsg;
+            } else {
+              updated.push(baseMsg);
+            }
+            return updated;
+          });
+
+          // Smoothly increment progress to keep the UI active
+          setAnalysisProgress(prev => Math.min(prev + (98 - prev) * 0.1, 98));
+
+          if (fetchDone) {
+            clearInterval(waitTimer);
+            finalizeAnalysis();
+          }
+        }, 1000);
+      }
+    };
+
+    // Periodically poll for completion if fetch finishes after animDone
+    const backupPoll = setInterval(() => {
+      if (fetchDone && animDone) {
+        clearInterval(backupPoll);
+        if (waitTimer) clearInterval(waitTimer);
+        finalizeAnalysis();
+      }
+    }, 100);
+
+    const finalizeAnalysis = () => {
+      clearInterval(backupPoll);
+      if (waitTimer) clearInterval(waitTimer);
+
+      if (fetchError) {
+        setAnalysisLogs(prev => [
+          ...prev,
+          "❌ Connection error: Threat AI Node failed to respond.",
+          "Exiting inspection..."
+        ]);
+        setAnalysisProgress(100);
+        setTimeout(() => {
+          setIsAnalyzing(false);
+          renderErrorDashboard();
+        }, 1000);
+      } else if (responseData) {
+        setAnalysisLogs(prev => [
+          ...prev,
+          "✔ AI Threat Analysis complete!",
+          "Rendering threat anatomy report..."
+        ]);
+        setAnalysisProgress(100);
+        setTimeout(() => {
+          setIsAnalyzing(false);
+          renderDashboardData(responseData, email);
+        }, 800);
+      }
+    };
+
+    const renderDashboardData = (data, rawEmail) => {
       setAnalysisResult(data);
-      setAnalyzedEmailText(email);
-      setActiveFinding(null); // Reset side pane
+      setAnalyzedEmailText(rawEmail);
+      setActiveFinding(null);
 
-      // Update the mini results container (Top Section)
       const { score, category, confidence } = data;
       const categoryEl = document.getElementById("category");
-      categoryEl.innerText = category;
-      
-      if (category === "PHISHING") {
-        categoryEl.style.color = "var(--danger)";
-        categoryEl.style.textShadow = "0 0 20px rgba(239, 68, 68, 0.4)";
-      } else if (category === "SUSPICIOUS") {
-        categoryEl.style.color = "var(--warning)";
-        categoryEl.style.textShadow = "0 0 20px rgba(245, 158, 11, 0.4)";
-      } else {
-        categoryEl.style.color = "var(--success)";
-        categoryEl.style.textShadow = "0 0 20px rgba(16, 185, 129, 0.4)";
+      if (categoryEl) {
+        categoryEl.innerText = category;
+        if (category === "PHISHING") {
+          categoryEl.style.color = "var(--danger)";
+          categoryEl.style.textShadow = "0 0 20px rgba(239, 68, 68, 0.4)";
+        } else if (category === "SUSPICIOUS") {
+          categoryEl.style.color = "var(--warning)";
+          categoryEl.style.textShadow = "0 0 20px rgba(245, 158, 11, 0.4)";
+        } else {
+          categoryEl.style.color = "var(--success)";
+          categoryEl.style.textShadow = "0 0 20px rgba(16, 185, 129, 0.4)";
+        }
       }
 
-      document.getElementById("scoreText").innerText = `${score}% Risk Score`;
-      document.getElementById("confidence").innerText = `Detection Confidence: ${confidence}`;
-      document.getElementById("scoreBar").style.width = `${score}%`;
+      const scoreTextEl = document.getElementById("scoreText");
+      if (scoreTextEl) scoreTextEl.innerText = `${score}% Risk Score`;
+
+      const confidenceEl = document.getElementById("confidence");
+      if (confidenceEl) confidenceEl.innerText = `Detection Confidence: ${confidence}`;
+
+      const scoreBarEl = document.getElementById("scoreBar");
+      if (scoreBarEl) scoreBarEl.style.width = `${score}%`;
 
       const signalsContainer = document.getElementById("detectedSignals");
-      signalsContainer.innerHTML = "";
-      if (data.findings.length > 0) {
-        data.findings.slice(0, 4).forEach((finding) => {
+      if (signalsContainer) {
+        signalsContainer.innerHTML = "";
+        if (data.findings.length > 0) {
+          data.findings.slice(0, 4).forEach((finding) => {
+            const div = document.createElement("div");
+            div.className = "signal-item fade-in-up";
+            div.innerText = `${finding.category}: ${finding.snippet}`;
+            signalsContainer.appendChild(div);
+          });
+        } else {
           const div = document.createElement("div");
           div.className = "signal-item fade-in-up";
-          div.innerText = `${finding.category}: ${finding.snippet}`;
+          div.innerText = "No common threat indicators detected.";
           signalsContainer.appendChild(div);
-        });
-      } else {
-        const div = document.createElement("div");
-        div.className = "signal-item fade-in-up";
-        div.innerText = "No common threat indicators detected.";
-        signalsContainer.appendChild(div);
+        }
       }
+    };
 
-    } catch (error) {
-      console.error("Analysis Error:", error);
+    const renderErrorDashboard = () => {
       const categoryEl = document.getElementById("category");
-      categoryEl.innerText = "ERROR";
-      categoryEl.style.color = "var(--danger)";
-      document.getElementById("scoreText").innerText = "0% Risk Score";
-      document.getElementById("confidence").innerText = "Detection Confidence: N/A";
+      if (categoryEl) {
+        categoryEl.innerText = "ERROR";
+        categoryEl.style.color = "var(--danger)";
+      }
+      const scoreTextEl = document.getElementById("scoreText");
+      if (scoreTextEl) scoreTextEl.innerText = "0% Risk Score";
+
+      const confidenceEl = document.getElementById("confidence");
+      if (confidenceEl) confidenceEl.innerText = "Detection Confidence: N/A";
+
       const signalsContainer = document.getElementById("detectedSignals");
-      signalsContainer.innerHTML = "<div class='signal-item fade-in-up'>Failed to connect to AI engine. Ensure Python backend is running on port 8000.</div>";
-    }
+      if (signalsContainer) {
+        signalsContainer.innerHTML = "<div class='signal-item fade-in-up'>Failed to connect to AI engine. Render free tier cold-started or timed out. Please try again.</div>";
+      }
+    };
   };
 
   const handleQuiz = (selectedIndex) => {
