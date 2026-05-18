@@ -287,8 +287,14 @@ export default function MailGuardApp() {
     let fetchError = null;
     let responseData = null;
 
+    // Dynamic API Router: Queries the local FastAPI engine during any local testing (Vite port, file://, or local IPs)
+    const isLocal = !window.location.hostname.includes("mailguardai.vercel.app");
+    const apiUrl = isLocal 
+      ? "http://localhost:8000/api/analyze" 
+      : "https://mailguard-backend-6mh7.onrender.com/api/analyze";
+
     // Start background fetch IMMEDIATELY in parallel
-    const apiPromise = fetch("https://mailguard-backend-6mh7.onrender.com/api/analyze", {
+    const apiPromise = fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -689,7 +695,7 @@ export default function MailGuardApp() {
                     <div className="terminal-logs">
                       {analysisLogs.map((log, i) => (
                         <div key={i} className="log-entry">
-                          <span className="log-prefix">></span> {log}
+                          <span className="log-prefix">&gt;</span> {log}
                         </div>
                       ))}
                       <div className="log-cursor">_</div>
@@ -735,6 +741,30 @@ export default function MailGuardApp() {
                 Click on the <span style={{color: 'var(--danger)'}}>highlighted anomalies</span> in your email below to reveal the AI's contextual analysis in real-time.
               </p>
             </div>
+
+            {analysisResult.findings.some(f => f.category === "Brand Impersonation") && (
+              <div className="brand-warning-banner fade-in-up" style={{
+                background: 'rgba(239, 68, 68, 0.08)',
+                border: '1px solid var(--danger)',
+                borderRadius: '12px',
+                padding: '1.25rem',
+                marginBottom: '2rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1.25rem',
+                color: 'var(--text-main, #fff)',
+                boxShadow: '0 0 25px rgba(239, 68, 68, 0.1)',
+                textAlign: 'left'
+              }}>
+                <span style={{ fontSize: '2rem', lineHeight: 1 }}>⚠️</span>
+                <div>
+                  <h4 style={{ color: 'var(--danger)', margin: '0 0 0.25rem 0', fontWeight: '700', fontSize: '1.1rem' }}>Critical Brand Impersonation Alert</h4>
+                  <p style={{ margin: 0, opacity: 0.9, fontSize: '0.95rem', lineHeight: '1.5' }}>
+                    Our Threat Intelligence Engine has flagged a typosquatting anomaly. This email references a prominent brand name in its content, but directs you to a highly suspicious, unregistered or lookalike domain. Do not interact with the sender or links.
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className="anatomy-container">
               {/* Main Email View Pane */}
