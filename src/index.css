@@ -795,6 +795,65 @@ input:checked + .slider:before {
   border-radius: 4px 8px 8px 4px; padding: 1rem 1.2rem; font-size: 0.95rem;
 }
 
+/* --- Premium Light Mode Threat Report & Inspector Overrides --- */
+[data-theme="light"] .anatomy-body {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme="light"] .anatomy-highlight {
+  color: #000000 !important;
+  border-bottom-style: solid;
+  font-weight: 600;
+}
+
+[data-theme="light"] .anatomy-highlight.severity-high {
+  background: rgba(239, 68, 68, 0.16) !important;
+  border-bottom-color: var(--danger) !important;
+}
+
+[data-theme="light"] .anatomy-highlight.severity-medium {
+  background: rgba(245, 158, 11, 0.16) !important;
+  border-bottom-color: var(--warning) !important;
+}
+
+[data-theme="light"] .anatomy-highlight.severity-low {
+  background: rgba(37, 99, 235, 0.12) !important;
+  border-bottom-color: var(--neon-cyan) !important;
+}
+
+[data-theme="light"] .finding-category {
+  color: var(--text-main) !important;
+}
+
+[data-theme="light"] .finding-snippet-box {
+  background: rgba(37, 99, 235, 0.05) !important;
+  border: 1px solid rgba(37, 99, 235, 0.15) !important;
+  border-left: 4px solid var(--neon-cyan) !important;
+}
+
+[data-theme="light"] .finding-snippet-box code {
+  color: var(--neon-cyan) !important;
+}
+
+[data-theme="light"] .finding-empty-state {
+  background: rgba(37, 99, 235, 0.02) !important;
+  border: 1px dashed var(--border-strong) !important;
+}
+
+[data-theme="light"] .anatomy-recommendation p {
+  color: var(--text-main) !important;
+}
+
+[data-theme="light"] .anatomy-header {
+  background: rgba(37, 99, 235, 0.05) !important;
+}
+
+[data-theme="light"] .red-flag {
+  color: #000000 !important;
+  font-weight: 600;
+  border-bottom-style: solid;
+}
+
 /* ========================================= */
 /* INTERACTIVE EDUCATIONAL SECTIONS          */
 /* ========================================= */
