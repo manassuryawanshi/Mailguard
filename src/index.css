@@ -1514,6 +1514,22 @@ input:checked + .slider:before {
   gap: 0.4rem;
 }
 
+.terminal-logs::-webkit-scrollbar {
+  width: 6px;
+}
+.terminal-logs::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+.terminal-logs::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.terminal-logs::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-cyan);
+}
+
 .log-entry { opacity: 0.9; }
 .log-prefix { color: var(--neon-cyan); margin-right: 0.5rem; }
 .log-cursor { animation: blink 1s step-end infinite; display: inline-block; }
