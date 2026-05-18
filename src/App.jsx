@@ -325,7 +325,7 @@ export default function MailGuardApp() {
         animDone = true;
         checkCompletion();
       }
-    }, 140);
+    }, 50);
 
     let waitTimer = null;
     let elapsedSeconds = 0;
@@ -403,7 +403,7 @@ export default function MailGuardApp() {
         setTimeout(() => {
           setIsAnalyzing(false);
           renderDashboardData(responseData, email);
-        }, 800);
+        }, 200);
       }
     };
 
