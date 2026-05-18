@@ -260,6 +260,205 @@ export default function MailGuardApp() {
     return () => clearInterval(interval);
   }, []);
 
+  const analyzeEmailLocally = (emailText) => {
+    const rawText = emailText;
+    const email_text = rawText.toLowerCase();
+    let score = 0;
+    const findings = [];
+    const registered_snippets = new Set();
+
+    const add_finding = (snippet, category, reason, severity, weight) => {
+      if (registered_snippets.has(snippet.toLowerCase())) return;
+      registered_snippets.add(snippet.toLowerCase());
+      score += weight;
+      findings.push({
+        snippet,
+        category,
+        reason,
+        severity
+      });
+    };
+
+    // 1. Advanced Brand Impersonation / Domain Typosquatting Analysis
+    const brands = ["netflix", "paypal", "apple", "microsoft", "google", "amazon", "facebook", "instagram", "linkedin", "spotify", "chase", "wellsfargo", "bankofamerica"];
+    const url_pattern = /(https?:\/\/[^\s]+)/gi;
+    const urls = rawText.match(url_pattern) || [];
+
+    urls.forEach(url => {
+      let domain = "";
+      try {
+        const parsed = new URL(url);
+        domain = parsed.hostname.toLowerCase();
+      } catch (e) {
+        domain = "";
+      }
+
+      if (domain) {
+        brands.forEach(brand => {
+          if (email_text.includes(brand)) {
+            if (domain.includes(brand)) {
+              const official_suffixes = [
+                `${brand}.com`, `${brand}.net`, `${brand}.org`, 
+                `${brand}.co.uk`, `${brand}.de`, `${brand}.jp`,
+                `signin.${brand}`, `login.${brand}`
+              ];
+              const is_official = official_suffixes.some(s => domain === s || domain.endsWith("." + s));
+              if (!is_official) {
+                add_finding(
+                  url, 
+                  "Brand Impersonation", 
+                  `The URL domain '${domain}' mimics the legitimate brand '${brand.charAt(0).toUpperCase() + brand.slice(1)}' but is hosted on an unofficial server. This is a severe hallmark of phishing/typosquatting.`, 
+                  "HIGH", 
+                  45
+                );
+              }
+            }
+          }
+        });
+      }
+    });
+
+    // 2. Billing, Subscription & Payment Fraud Context
+    const payment_cues = {
+      "update your payment": { weight: 25, reason: "Typical lure designed to redirect victims to a fraudulent credit card harvester." },
+      "update your billing": { weight: 25, reason: "Prompts payment details updates to harvest billing/banking data." },
+      "verify your billing": { weight: 20, reason: "Asks for sensitive cardholder verification details under pretense of a lock." },
+      "processing your latest payment": { weight: 25, reason: "Mimics payment failure/decline notifications to steal credit cards." },
+      "issue processing": { weight: 20, reason: "Prompts transaction issues to trick user into verifying credentials." },
+      "payment failure": { weight: 20, reason: "Scams leverage fake transaction declines to scare users into re-entering details." }
+    };
+    Object.keys(payment_cues).forEach(cue => {
+      if (email_text.includes(cue)) {
+        add_finding(cue, "Billing / Payment Scam", payment_cues[cue].reason, "HIGH", payment_cues[cue].weight);
+      }
+    });
+
+    // 3. Financial & BEC (Business Email Compromise) Keywords
+    const financial_cues = {
+      "wire transfer": { weight: 25, reason: "Requests for quick, irreversible wire transfers are highly indicative of business fraud." },
+      "gift card": { weight: 25, reason: "Gift cards are untraceable and a highly preferred medium for social engineers." },
+      "bitcoin": { weight: 30, reason: "Cryptocurrency transfers are highly common in extortion or ransomware threats." },
+      "crypto": { weight: 20, reason: "Unsolicited cryptocurrency demands or opportunities indicate extortion/scams." },
+      "invoice attached": { weight: 20, reason: "Fake invoice references prompt users to open malicious attachments." },
+      "payment overdue": { weight: 20, reason: "Overdue invoice threat bypasses logical validation." },
+      "routing number": { weight: 25, reason: "Harvests banking routing coordinates to compromise funds." }
+    };
+    Object.keys(financial_cues).forEach(cue => {
+      if (email_text.includes(cue)) {
+        add_finding(cue, "Financial Threat", financial_cues[cue].reason, "HIGH", financial_cues[cue].weight);
+      }
+    });
+
+    // 4. Advanced Urgency & Timeline Analysis (Regex boundaries)
+    const deadline_pattern = /\b(?:within|in|next|limit|only|within the next)\s+(?:the\s+)?(?:next\s+)?\d{1,2}\s+(?:hours|days|mins|minutes)\b/gi;
+    const deadline_matches = email_text.match(deadline_pattern) || [];
+    deadline_matches.forEach(match => {
+      add_finding(match, "Urgency / Deadline", "Strict, artificial timelines are crafted to induce anxiety and prevent security checks.", "MEDIUM", 25);
+    });
+
+    // General Urgency & Intimidation keywords
+    const urgency_cues = {
+      "immediately": { weight: 15, reason: "Demands quick action, preventing the victim from verifying the request." },
+      "urgent": { weight: 15, reason: "A psychological bypass trigger to force rash decision-making." },
+      "on hold": { weight: 25, reason: "Warning that an account is frozen or on hold creates instant panic and compliance." },
+      "suspended": { weight: 25, reason: "Threat of account suspension triggers panic and bypassed logic." },
+      "final notice": { weight: 20, reason: "Creates immediate engagement through finality and intimidation." },
+      "action required": { weight: 15, reason: "Authoritative prompt commonly used in mass-phishing notifications." }
+    };
+    Object.keys(urgency_cues).forEach(cue => {
+      if (email_text.includes(cue)) {
+        add_finding(cue, "Urgency / Intimidation", urgency_cues[cue].reason, urgency_cues[cue].weight >= 25 ? "HIGH" : "MEDIUM", urgency_cues[cue].weight);
+      }
+    });
+
+    // 5. Credential Harvesting & Safety Prompts
+    const credential_cues = {
+      "verify your account": { weight: 25, reason: "Classic hook used to direct victims to a spoofed login page." },
+      "password reset": { weight: 15, reason: "Unsolicited password resets frequently mask phishing lures." },
+      "login attempt": { weight: 15, reason: "Fake security warnings designed to steal the credentials they claim are at risk." },
+      "click here to login": { weight: 20, reason: "Direct embedded login links bypass safety protocols and are dangerous." },
+      "unauthorized access": { weight: 20, reason: "Fear-tactic warning to trick users into 'securing' their login." }
+    };
+    Object.keys(credential_cues).forEach(cue => {
+      if (email_text.includes(cue)) {
+        add_finding(cue, "Credential Theft", credential_cues[cue].reason, "HIGH", credential_cues[cue].weight);
+      }
+    });
+
+    // 6. Impersonal Greetings
+    const generic_greetings = ["dear customer", "dear user", "valued customer", "dear sir/madam"];
+    generic_greetings.forEach(greeting => {
+      if (email_text.includes(greeting)) {
+        add_finding(greeting, "Impersonal Greeting", "Official brand communications address you by your full name. Generic greetings indicate an automated mass campaign.", "LOW", 10);
+      }
+    });
+
+    // 7. Advanced URL Security and Reputation Analysis
+    urls.forEach(url => {
+      let domain = "";
+      try {
+        const parsed = new URL(url);
+        domain = parsed.hostname.toLowerCase();
+      } catch (e) {
+        domain = "";
+      }
+
+      if (domain) {
+        // IP Address URL Detection
+        const ip_url_pattern = /https?:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i;
+        if (ip_url_pattern.test(url)) {
+          add_finding(url, "Malicious Link", "Raw IP addresses are used to hide hostnames and bypass modern domain safety checkers.", "HIGH", 30);
+        }
+        // Non-secure HTTP Check on Transactions/Verification
+        else if (url.toLowerCase().startsWith("http://")) {
+          add_finding(url, "Insecure URL", "Link uses unencrypted HTTP protocol. Secure brands strictly mandate HTTPS for membership or payment pages.", "MEDIUM", 15);
+        }
+        // Suspicious Hostname Keywords
+        else {
+          const suspicious_keywords = ["verify", "update", "billing", "login", "signin", "secure", "support", "membership"];
+          const domain_has_keyword = suspicious_keywords.some(k => domain.includes(k));
+          if (domain_has_keyword) {
+            add_finding(url, "Suspicious Domain", `The URL domain '${domain}' utilizes misleading words commonly associated with system portals to trick users.`, "HIGH", 25);
+          } else {
+            add_finding(url, "Embedded Link", "Standard embedded URL. Hover over the link to verify correct origin.", "LOW", 10);
+          }
+        }
+      }
+    });
+
+    // 8. Malicious Attachments Parsing
+    const attachment_pattern = /([\w-]+\.(exe|scr|bat|vbs|zip|rar))\b/gi;
+    const matches = email_text.match(attachment_pattern) || [];
+    matches.forEach(filename => {
+      const ext = filename.split('.').pop().toLowerCase();
+      add_finding(filename, "Suspicious Attachment", `Unexpected files ending in ${ext} frequently carry active ransomware or malware packages.`, "HIGH", 25);
+    });
+
+    if (score > 100) score = 100;
+
+    let category = "LEGITIMATE";
+    let confidence = "LOW";
+    let recommendation = "This email appears safe, but always verify the sender's address before clicking any links.";
+    
+    if (score >= 75) {
+      category = "PHISHING";
+      confidence = "HIGH";
+      recommendation = "CRITICAL: High threat detected. Do not click links, input passwords, or open attachments. Report this immediately.";
+    } else if (score >= 40) {
+      category = "SUSPICIOUS";
+      confidence = "MEDIUM";
+      recommendation = "WARNING: Proceed with caution. Vague indicators found. Do not enter financial information or personal logins.";
+    }
+
+    return {
+      score,
+      category,
+      confidence,
+      recommendation,
+      findings
+    };
+  };
+
   const analyzeEmail = async () => {
     const emailInput = document.getElementById("emailInput");
     if (!emailInput) return;
@@ -361,7 +560,19 @@ export default function MailGuardApp() {
           // Smoothly increment progress to keep the UI active
           setAnalysisProgress(prev => Math.min(prev + (98 - prev) * 0.1, 98));
 
-          if (fetchDone) {
+          if (elapsedSeconds >= 1 && !fetchDone) {
+            clearInterval(waitTimer);
+            setAnalysisLogs(prev => [
+              ...prev,
+              "⚡ Zero-latency Local Threat Intelligence Backup Engine activated!",
+              "Performing instant local heuristics analysis..."
+            ]);
+            setTimeout(() => {
+              responseData = analyzeEmailLocally(email);
+              fetchDone = true;
+              finalizeAnalysis();
+            }, 300);
+          } else if (fetchDone) {
             clearInterval(waitTimer);
             finalizeAnalysis();
           }
