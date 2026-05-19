@@ -2,6 +2,8 @@
 
 Advanced Full-Stack Phishing Detection and Cybersecurity Awareness Platform.
 
+![MailGuard Premium Dashboard](src/assets/mailguard_dashboard.png)
+
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)](https://react.dev)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.136-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
@@ -29,6 +31,8 @@ MailGuard is a security-focused web application designed to analyze email payloa
 
 ### Interactive Threat Inspector
 The platform features an "Anatomy View" that renders raw email payloads with dynamic highlighting. Users can interact with specific segments to view detailed technical breakdowns of the detected threat vectors.
+
+![Interactive Threat Inspector and Live Report](src/assets/threat_inspector.png)
 
 ### Multi-Layered Analysis Engine
 The Python backend evaluates incoming payloads against several security heuristic layers:
@@ -77,6 +81,19 @@ The application is built using a modern, distributed architecture:
 
 1.  **Frontend (React/Vite):** A glassmorphic, responsive interface hosted on Vercel. It handles the interactive UI, state management, and real-time visualization of threat data.
 2.  **Backend (FastAPI):** A high-performance Python API hosted on Render. It executes the core analysis logic and returns structured JSON findings.
+
+---
+
+## Design & Dynamic Theme System
+
+MailGuard features an immersive, state-of-the-art visual design built around:
+*   **Space-Blue Glassmorphic Dark Theme:** Glowing cybernetic overlays, neon cyan status controls, and deep blue backdrops tailored for developers and security professionals.
+*   **High-Contrast Slate Light Theme:** Optimized from the ground up for maximum color contrast, utilizing bold black anomaly text and pastel glass snippet containers for outstanding daylight readability.
+
+<p align="center">
+  <img src="src/assets/Darkmode.png" width="49%" alt="Space-Blue Dark Theme" />
+  <img src="src/assets/Lightmode.png" width="49%" alt="High-Contrast Light Theme" />
+</p>
 
 ---
 
