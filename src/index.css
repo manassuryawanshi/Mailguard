@@ -1139,7 +1139,7 @@ input:checked + .slider:before {
   font-size: 2.5rem;
   text-align: center;
 }
-.section { padding: 5rem 0; position: relative; }
+.section { padding-top: 5rem; padding-bottom: 5rem; position: relative; }
 .section-title { font-size: 4rem; text-align: center; margin-bottom: 1rem; line-height: 1.1; }
 .section-subtitle { text-align: center; color: var(--text-muted); max-width: 750px; margin: 0 auto 3rem; font-size: 1.15rem; line-height: 1.7; }
 
@@ -1794,3 +1794,56 @@ input:checked + .slider:before {
 
 /* Custom Selection */
 ::selection { background: var(--border-glow); color: #fff; }
+
+/* ========================================= */
+/* PREMIUM MOBILE RESPONSIVE LAYOUT SYSTEM   */
+/* ========================================= */
+@media (max-width: 768px) {
+  /* Prevent any element from touching the literal edges of mobile viewports */
+  .container {
+    padding: 0 1.25rem !important; /* Forces 20px safe horizontal gutters */
+  }
+
+  /* Compact padding for cards on smaller mobile displays to maximize reading real estate */
+  .clean-card, 
+  .glass-panel {
+    padding: 1.25rem !important;
+    border-radius: 16px !important;
+  }
+
+  /* Safe margins for multi-column grid components on phone viewports */
+  .stats-grid,
+  .anatomy-container,
+  .tips-grid,
+  .defend-section {
+    gap: 1.25rem !important;
+  }
+
+  .anatomy-email-pane, 
+  .anatomy-details-pane {
+    padding: 1.25rem !important;
+    border-radius: 16px !important;
+  }
+
+  .anatomy-details-pane {
+    border-top: none !important;
+    border-left: 4px solid var(--neon-cyan) !important; /* Sleek mobile alignment indicator */
+  }
+
+  /* Dynamic Typographic Scaling to prevent awkward header wrapping on narrow devices */
+  .section-title {
+    font-size: 2.2rem !important;
+    line-height: 1.2 !important;
+    padding: 0 0.5rem !important;
+  }
+
+  .section-subtitle {
+    font-size: 0.95rem !important;
+    margin-bottom: 2rem !important;
+    padding: 0 0.5rem !important;
+  }
+
+  .hero-title {
+    line-height: 1.2 !important;
+  }
+}
