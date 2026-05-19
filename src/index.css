@@ -1792,6 +1792,14 @@ input:checked + .slider:before {
   letter-spacing: 3px; color: var(--neon-cyan); margin-bottom: 1.5rem; font-weight: 600;
 }
 
+/* Disable iOS Safari auto-detected link style injection */
+a[href^="mailto:"],
+a[href^="tel:"] {
+  color: inherit !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
 /* Custom Selection */
 ::selection { background: var(--border-glow); color: #fff; }
 
