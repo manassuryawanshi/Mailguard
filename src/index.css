@@ -1913,5 +1913,26 @@ a[href^="tel:"] {
     padding: 0 2px !important;
     word-break: break-word !important;
   }
+
+  /* Transform tooltips into high-fidelity responsive floating bottom sheets on mobile to completely prevent overflow */
+  .red-flag .tooltip {
+    position: fixed !important;
+    bottom: 1.5rem !important;
+    left: 1.25rem !important;
+    right: 1.25rem !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: translateY(0) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7) !important;
+    border-radius: 16px !important;
+    border: 1.5px solid var(--danger) !important;
+    background: rgba(13, 27, 42, 0.95) !important; /* Premium dark glass */
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
+    padding: 1.25rem !important;
+    font-size: 0.9rem !important;
+    z-index: 999999 !important;
+    pointer-events: auto !important; /* Allow clicking inside tooltip if needed */
+  }
 }
 
