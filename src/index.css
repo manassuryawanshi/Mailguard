@@ -1858,4 +1858,45 @@ input:checked + .slider:before {
   .hero-title {
     line-height: 1.2 !important;
   }
+
+  /* 2x2 Grid Layout for live attack pulse log items on mobile viewports */
+  .attack-item {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-areas: 
+      "city status"
+      "type time" !important;
+    gap: 0.5rem !important;
+    padding: 1rem !important;
+    align-items: center !important;
+  }
+  
+  .attack-city {
+    grid-area: city !important;
+    text-align: left !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+  }
+  
+  .attack-status {
+    grid-area: status !important;
+    text-align: right !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+  }
+  
+  .attack-type {
+    grid-area: type !important;
+    text-align: left !important;
+    font-size: 0.85rem !important;
+    color: var(--neon-cyan) !important;
+  }
+  
+  .attack-time {
+    grid-area: time !important;
+    text-align: right !important;
+    font-size: 0.8rem !important;
+    color: var(--text-muted) !important;
+  }
 }
+
