@@ -1826,8 +1826,20 @@ input:checked + .slider:before {
   }
 
   .anatomy-details-pane {
+    position: relative !important; /* Disable sticky on mobile viewports to prevent collisions */
+    top: 0 !important;
     border-top: none !important;
     border-left: 4px solid var(--neon-cyan) !important; /* Sleek mobile alignment indicator */
+  }
+
+  /* Prevent vertical section overlapping and enforce high-end breathing room on mobile */
+  .section {
+    padding-top: 5rem !important;
+    padding-bottom: 5rem !important;
+    margin-top: 4rem !important;
+    margin-bottom: 4rem !important;
+    display: block !important;
+    clear: both !important;
   }
 
   /* Dynamic Typographic Scaling to prevent awkward header wrapping on narrow devices */
